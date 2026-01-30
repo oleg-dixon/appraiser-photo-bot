@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    container_name: photo-table-bot
+    env_file:
+      - .env
+    restart: unless-stopped
+    volumes:
+      - ./bot.log:/app/bot.log
+      
