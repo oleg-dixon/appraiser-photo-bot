@@ -3,8 +3,8 @@ import os
 import sys
 import logging
 from dotenv import load_dotenv
-from .bot import PhotoTableBot
-from .config import BotConfig
+from bot import PhotoTableBot
+from config import BotConfig
 
 def setup_logging():
     """Настраивает логирование"""

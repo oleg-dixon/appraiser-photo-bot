@@ -8,8 +8,8 @@ from telegram.ext import (
     filters
 )
 from telegram import Update
-from .handlers import BotHandlers
-from .config import BotConfig
+from handlers import BotHandlers
+from config import BotConfig
 
 logger = logging.getLogger(__name__)
 

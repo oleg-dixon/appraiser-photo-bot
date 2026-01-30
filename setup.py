@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 # Читаем версию из __init__.py
-with open(os.path.join("appraiser_photo_bot", "__init__.py"), "r", encoding="utf-8") as f:
+with open(os.path.join("__init__.py"), "r", encoding="utf-8") as f:
     for line in f:
         if line.startswith("__version__"):
             version = line.split("=")[1].strip().strip('"').strip("'")
@@ -60,7 +60,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "appraiser-photo-bot=appraiser_photo_bot.cli:main",
+            "appraiser-photo-bot=cli:main",
         ],
     },
     include_package_data=True,

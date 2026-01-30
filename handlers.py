@@ -17,15 +17,15 @@ from telegram.ext import (
     ContextTypes,
 )
 
-from .document_creators import (
+from document_creators import (
     get_size_option_name,
     compress_image,
     calculate_pages_info,
     DocumentCreator
 )
-from .config import BotConfig
-from .keyboards import Keyboards
-from .document_creators.messages import MessageGenerator  # Импортируем новый MessageGenerator
+from config import BotConfig
+from keyboards import Keyboards
+from document_creators.messages import MessageGenerator  # Импортируем новый MessageGenerator
 
 logger = logging.getLogger(__name__)
 
