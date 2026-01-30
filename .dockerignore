@@ -1,0 +1,27 @@
+# Минимальный .dockerignore
+
+# Секреты
+.env
+.env.*
+
+# Python кэш
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Виртуальное окружение
+.venv/
+venv/
+
+# Логи (кроме bot.log который монтируем)
+*.log
+!bot.log  # исключение - этот файл монтируем как том
+
+# Системные файлы
+.DS_Store
+*.swp
+
+# IDE
+.vscode/
+.idea/

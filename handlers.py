@@ -587,10 +587,9 @@ class BotHandlers:
                        f"{page_info['total_pages']} страниц")
         
             # Проверяем ограничение на количество фото
-            MAX_PHOTOS = 15
-            if photos_count > MAX_PHOTOS:
-                logger.warning(f"Слишком много фото: {photos_count} > {MAX_PHOTOS}")
-                error_text = self.messages.get_too_many_photos_error(photos_count, MAX_PHOTOS)
+            if photos_count > BotConfig.max_photos:
+                logger.warning(f"Слишком много фото: {photos_count} > {BotConfig.max_photos}")
+                error_text = self.messages.get_too_many_photos_error(photos_count, BotConfig.max_photos)
                 
                 await context.bot.send_message(
                     chat_id=user_id,
