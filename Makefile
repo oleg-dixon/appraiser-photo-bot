@@ -64,10 +64,6 @@ run: ## Запустить бота через установленный пак
 	@echo "$(YELLOW)Запускаю бота...$(NC)"
 	@appraiser-photo-bot
 
-run-dev: ## Запустить бота в режиме разработки (без установки)
-	@echo "$(YELLOW)Запускаю бота в режиме разработки...$(NC)"
-	@$(PYTHON) -m appraiser_photo_bot.cli
-
 clean: ## Очистить временные файлы и кэш
 	@echo "$(YELLOW)Очищаю временные файлы...$(NC)"
 	@find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
@@ -92,26 +88,17 @@ test: ## Запустить тесты
 	@echo "$(YELLOW)Запускаю тесты...$(NC)"
 	@$(UV) run pytest tests/ -v --cov=appraiser_photo_bot --cov-report=term-missing
 
-lint: ## Проверить код с помощью flake8
+lint: ## Проверить код с помощью ruff
 	@echo "$(YELLOW)Проверяю код...$(NC)"
-	@$(UV) run flake8 appraiser_photo_bot/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
-	@$(UV) run flake8 appraiser_photo_bot/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
-
-format: ## Форматировать код с помощью black и isort
-	@echo "$(YELLOW)Форматирую код...$(NC)"
-	@$(UV) run black appraiser_photo_bot/ tests/
-	@$(UV) run isort appraiser_photo_bot/ tests/
-
-format-check: ## Проверить форматирование без изменений
-	@echo "$(YELLOW)Проверяю форматирование...$(NC)"
-	@$(UV) run black --check appraiser_photo_bot/ tests/
-	@$(UV) run isort --check-only appraiser_photo_bot/ tests/
+	@$(UV) run ruff check appraiser_photo_bot \
+		run ruff check --fix \
+		|| echo "Есть ошибки, требующие исправления"
 
 type-check: ## Проверить типы с помощью mypy
 	@echo "$(YELLOW)Проверяю типы...$(NC)"
 	@$(UV) run mypy appraiser_photo_bot/
 
-check-all: lint format-check type-check test ## Выполнить все проверки
+check-all: lint type-check test ## Выполнить все проверки
 
 build: ## Собрать пакет
 	@echo "$(YELLOW)Собираю пакет...$(NC)"

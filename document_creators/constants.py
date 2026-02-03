@@ -2,6 +2,11 @@
 Константы для создания документов.
 """
 
+from PIL import ImageFile
+
+# Разрешить загрузку усеченных изображений
+ImageFile.LOAD_TRUNCATED_IMAGES = True
+
 # Опции для размера изображений
 SIZE_OPTIONS = {
     'small': (3.0, 3.0),   # см

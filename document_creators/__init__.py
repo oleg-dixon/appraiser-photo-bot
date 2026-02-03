@@ -1,7 +1,6 @@
 """
 Модуль для создания Word документов с фотографиями в таблицах.
 """
-# document_creators/__init__.py
 
 from .constants import SIZE_OPTIONS
 from .utils import (
@@ -11,7 +10,7 @@ from .utils import (
     calculate_pages_info,
     get_size_option_name,
 )
-from .messages import MessageGenerator  # Только новый класс
+from .messages import MessageGenerator
 from .document_base import (
     create_single_page_document,
     create_document_with_table,
@@ -31,9 +30,7 @@ __all__ = [
     'split_into_pages',
     'calculate_pages_info',
     'get_size_option_name',
-    # Новый MessageGenerator
     'MessageGenerator',
-    # Документные функции
     'create_single_page_document',
     'create_document_with_table',
     'set_table_borders',
@@ -43,5 +40,4 @@ __all__ = [
     'cleanup_all_temp_files',
 ]
 
-# Создаем глобальный экземпляр MessageGenerator для удобства использования
 message_generator = MessageGenerator()

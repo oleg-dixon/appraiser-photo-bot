@@ -1,22 +1,22 @@
 from setuptools import setup, find_packages
 import os
 
-# Читаем README
-with open("README.md", "r", encoding="utf-8") as fh:
-    long_description = fh.read()
 
-# Читаем версию из __init__.py
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description: str = fh.read()
+
+
+version: str = "1.0.0"
 with open(os.path.join("__init__.py"), "r", encoding="utf-8") as f:
     for line in f:
         if line.startswith("__version__"):
             version = line.split("=")[1].strip().strip('"').strip("'")
             break
-    else:
-        version = "1.0.0"
+
 
 setup(
     name="appraiser-photo-bot",
-    version="1.0.0",
+    version=version,
     author="Oleg Diukaev",
     author_email="olegdixon5973@gmail.com",
     description="Telegram bot for creating Word documents with photo tables",
