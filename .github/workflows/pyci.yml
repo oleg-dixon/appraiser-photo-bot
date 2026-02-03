@@ -1,0 +1,28 @@
+name: Python CI
+
+on:
+  - push
+  - pull_request
+
+env:
+  CI: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Set up Python3
+
+        uses: actions/setup-python@v4
+
+      - name: Install dependencies
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          make install
+      - name: Run linter
+        run:
+          make lint
