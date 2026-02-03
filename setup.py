@@ -53,7 +53,6 @@ setup(
             "pytest-cov>=4.0",
             "pre-commit>=3.0",
             "isort>=5.12",
-            "types-python-dotenv",
             "types-pillow",
             "types-setuptools",
         ],
