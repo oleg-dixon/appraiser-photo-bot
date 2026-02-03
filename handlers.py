@@ -115,7 +115,7 @@ class BotHandlers:
         user_id: int = update.effective_user.id
         response: str = update.message.text.strip().lower()
 
-        logger.debug(f"=== DEBUG get_title ===")
+        logger.debug("=== DEBUG get_title ===")
         logger.debug(f"Пользователь: {user_id}")
         logger.debug(f"Текст сообщения: '{update.message.text}'")
         logger.debug(f"Обработанный ответ: '{response}'")
@@ -553,7 +553,7 @@ class BotHandlers:
             creating_text: str = self.messages.get_creating_document_message_with_progress(
                 photos_count, rows, cols, page_info, progress=10
             )
-            creating_message = await context.bot.send_message(
+            await context.bot.send_message(
                 chat_id=user_id,
                 text=creating_text,
                 parse_mode="Markdown",
@@ -598,7 +598,7 @@ class BotHandlers:
                 doc_size_mb, progress=50
             )
 
-            sending_message = await context.bot.send_message(
+            await context.bot.send_message(
                 chat_id=user_id,
                 text=sending_text,
                 parse_mode="Markdown",
@@ -624,7 +624,7 @@ class BotHandlers:
             self.cleanup_user_data(user_id)
 
             try:
-                sent_document = await context.bot.send_document(
+                await context.bot.send_document(
                     chat_id=user_id,
                     document=document_bytes,
                     filename=filename,
@@ -637,7 +637,7 @@ class BotHandlers:
                 logger.info("✅ Документ успешно отправлен!")
 
                 file_sent_text: str = self.messages.get_file_sent_message(progress=80)
-                file_sent_message = await context.bot.send_message(
+                await context.bot.send_message(
                     chat_id=user_id,
                     text=file_sent_text,
                     parse_mode="Markdown",
@@ -649,7 +649,7 @@ class BotHandlers:
                 success_text: str = self.messages.get_document_success_message_with_progress(
                     photos_count, rows, cols, page_info, doc_size_mb, progress=100
                 )
-                success_message = await context.bot.send_message(
+                await context.bot.send_message(
                     chat_id=user_id,
                     text=success_text,
                     parse_mode="Markdown",

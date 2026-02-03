@@ -1,5 +1,5 @@
 .PHONY: help install install-dev setup-env run clean test lint format type-check check-all \
-		build publish install-package uninstall docker-build docker-run docker-clean
+        build publish install-package uninstall docker-build docker-run docker-clean
 
 # Цвета для вывода
 GREEN := \033[0;32m
@@ -89,16 +89,32 @@ test: ## Запустить тесты
 	@$(UV) run pytest tests/ -v --cov=appraiser_photo_bot --cov-report=term-missing
 
 lint: ## Проверить код с помощью ruff
-	@echo "$(YELLOW)Проверяю код...$(NC)"
-	@$(UV) run ruff check appraiser_photo_bot \
-		run ruff check --fix \
-		|| echo "Есть ошибки, требующие исправления"
+	@echo "$(YELLOW)Проверяю код с помощью ruff...$(NC)"
+	@$(UV) run ruff check .
+
+lint-fix: ## Исправить автоматически исправимые проблемы с помощью ruff
+	@echo "$(YELLOW)Исправляю автоматически исправимые проблемы...$(NC)"
+	@$(UV) run ruff check . --fix
+
+lint-all: ## Проверить и пофиксить код с помощью ruff
+	@echo "$(YELLOW)Проверяю и исправляю код...$(NC)"
+	@$(UV) run ruff check . --output-format=full
+
+format: ## Форматировать код с помощью ruff
+	@echo "$(YELLOW)Форматирую код...$(NC)"
+	@$(UV) run ruff format .
+
+check-style: ## Проверить стиль кода с помощью ruff
+	@echo "$(YELLOW)Проверяю стиль кода...$(NC)"
+	@$(UV) run ruff format . --check
 
 type-check: ## Проверить типы с помощью mypy
 	@echo "$(YELLOW)Проверяю типы...$(NC)"
-	@$(UV) run mypy appraiser_photo_bot/
+	@$(UV) run mypy appraiser_photo_bot/ document_creators/
 
-check-all: lint type-check test ## Выполнить все проверки
+check-all: lint check-style type-check test ## Выполнить все проверки
+
+quick-check: lint-fix format ## Быстрая проверка и исправление кода
 
 build: ## Собрать пакет
 	@echo "$(YELLOW)Собираю пакет...$(NC)"
