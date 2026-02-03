@@ -12,17 +12,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - uses: actions/checkout@v4
-
+      
       - name: Set up Python3
-
         uses: actions/setup-python@v4
-
-      - name: Install dependencies
+        
+      - name: Install uv
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
+          
+      - name: Create virtual environment
+        run: |
+          uv venv .venv
+          
+      - name: Install dependencies
+        run: |
+          source .venv/bin/activate
           make install
+          
       - name: Run linter
-        run:
+        run: |
+          source .venv/bin/activate
           make lint
+          
+      # - name: Run tests
+      #   run: |
+      #     source .venv/bin/activate
+      #     make test

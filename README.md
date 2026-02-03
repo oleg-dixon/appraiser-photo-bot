@@ -1,3 +1,5 @@
+[![Python CI](https://github.com/oleg-dixon/appraiser-photo-bot/actions/workflows/pyci.yml/badge.svg)](https://github.com/oleg-dixon/appraiser-photo-bot/actions/workflows/pyci.yml)
+
 # Appraiser Table Bot
 
 Telegram бот для создания Word документов с таблицами из фотографий. Разработан оценщиком СРО «РАО» Олегом Олеговичем Дюкаревым для оценочного и экспертного сообществ.
