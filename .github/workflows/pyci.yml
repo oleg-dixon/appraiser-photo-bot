@@ -23,7 +23,7 @@ jobs:
           
       - name: Create virtual environment
         run: |
-          make venv-create
+          uv venv .venv
           
       - name: Install dependencies
         run: |
