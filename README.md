@@ -22,17 +22,25 @@ git clone https://github.com/oleg-dixon/appraiser-photo-bot.git
 cd appraiser-photo-bot
 ```
 
-2. Инициализируйте проект (создает .env, устанавливает зависимости):
+2. Установите UV (если еще не установлен)
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Или 
+pip install uv
+```
+
+3. Инициализируйте проект (создает .env, устанавливает зависимости):
 ```bash
 make init
 ```
 
-3. Отредактируйте файл .env, добавив токен бота:
+4. Отредактируйте файл .env, добавив токен бота:
 ```bash
 nano .env
 ```
 
-4. Запустите бота
+5. Запустите бота
 ```bash
 make run
 ```
