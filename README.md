@@ -154,7 +154,7 @@ make check-style
 make type-check
 
 # Запустить тесты
-make test
+make test # Тесты в разработке
 
 # Быстрая проверка и исправление
 make quick-check
@@ -198,15 +198,6 @@ make docker-build
 
 # Запустить в Docker
 make docker-run
-
-# Docker Compose
-make docker-up
-make docker-down
-make docker-logs
-make docker-shell
-
-# Тесты в Docker
-make docker-test
 ```
 
 
