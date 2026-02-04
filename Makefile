@@ -141,10 +141,6 @@ docker-clean: ## Очистить Docker образы
 	@echo "$(YELLOW)Очищаю Docker образы...$(NC)"
 	@docker rmi $(PACKAGE_NAME) 2>/dev/null || true
 
-docker-up: ## Запустить с Docker Compose
-	@echo "$(YELLOW)Запускаю Docker Compose...$(NC)"
-	@docker-compose up -d
-
 docker-down: ## Остановить Docker Compose
 	@echo "$(YELLOW)Останавливаю Docker Compose...$(NC)"
 	@docker-compose down

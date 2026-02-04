@@ -16,12 +16,12 @@ from .document_base import (
     create_document_with_table,
     set_table_borders,
 )
-from .document_creator import (
-    DocumentCreator,
+from .temp_manager import (
     TempFileManager,
     cleanup_old_temp_files,
     cleanup_all_temp_files,
 )
+from .document_creator import DocumentCreator
 
 __all__ = [
     'SIZE_OPTIONS',

@@ -573,7 +573,7 @@ class BotHandlers:
             )
 
             logger.info(f"Начинаю создание документа из {photos_count} фото...")
-            document_bytes: bytes = creator.create_multi_page_document(
+            document_bytes: bytes = creator.create_document(
                 self.user_data[user_id]["photos"]
             )
 
