@@ -45,14 +45,12 @@ setup(
     extras_require={
         "dev": [
             "uv>=0.4.0",
-            "black>=23.0",
-            "flake8>=6.0",
             "mypy>=1.0",
+            "ruff>=0.14.14",
             "pytest>=7.0",
             "pytest-asyncio>=0.21.0",
             "pytest-cov>=4.0",
             "pre-commit>=3.0",
-            "isort>=5.12",
             "types-pillow",
             "types-setuptools",
         ],

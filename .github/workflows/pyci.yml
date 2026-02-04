@@ -22,7 +22,7 @@ jobs:
       - name: Install uv and dependencies
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
-          uv venv .venv
+          make venv-create
           source .venv/bin/activate
           make install-dev
           
