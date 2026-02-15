@@ -1,37 +1,90 @@
 name: Python CI
 
 on:
-  - push
-  - pull_request
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
 
 env:
   CI: true
 
 jobs:
-  build:
+  lint-and-check:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
       
-      - name: Set up Python3
-        uses: actions/setup-python@v4
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: 'pip'
           
-      - name: Install uv and dependencies
+      - name: Install uv
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
-          make venv-create
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          
+      - name: Cache uv dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/uv
+            .venv
+          key: ${{ runner.os }}-uv-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
+      
+      - name: Create virtual environment
+        run: make venv
+        
+      - name: Install dependencies
+        run: |
           source .venv/bin/activate
           make install-dev
           
-      - name: Run linter
+      - name: Check code formatting with ruff
         run: |
           source .venv/bin/activate
           make lint
           
-      # - name: Run tests
-      #   run: |
-      #     source .venv/bin/activate
-      #     make test
+      - name: Check import sorting
+        run: |
+          source .venv/bin/activate
+          ruff check . --select I001 --diff
+          
+      - name: Check code style with ruff format
+        run: |
+          source .venv/bin/activate
+          make format -- --check
+          
+      - name: Check version
+        run: |
+          source .venv/bin/activate
+          make version
+  docker-build:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: appraiser-photo-bot:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          
+      - name: Test Docker image
+        run: |
+          docker run --rm appraiser-photo-bot:latest --help || true
