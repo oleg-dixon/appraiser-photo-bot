@@ -46,25 +46,16 @@ jobs:
           source .venv/bin/activate
           make install-dev
           
-      - name: Check code formatting with ruff
+      - name: Quick check (lint + imports + format)
         run: |
           source .venv/bin/activate
-          make lint
-          
-      - name: Check import sorting
-        run: |
-          source .venv/bin/activate
-          ruff check . --select I001 --diff
-          
-      - name: Check code style with ruff format
-        run: |
-          source .venv/bin/activate
-          make format -- --check
+          make quick-check
           
       - name: Check version
         run: |
           source .venv/bin/activate
           make version
+
   docker-build:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
