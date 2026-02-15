@@ -15,6 +15,7 @@ UV := uv
 PACKAGE_NAME := appraiser-photo-bot
 ENV_FILE := .env
 ENV_EXAMPLE := .env.example
+VENV_DIR = .venv
 
 help: ## Показать это сообщение
 	@printf "$(CYAN)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n"
@@ -22,9 +23,11 @@ help: ## Показать это сообщение
 	@printf "$(CYAN)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n"
 	@echo ""
 	@echo "$(GREEN)🚀 Быстрый старт:$(NC)"
-	@echo "  1. make init           # Инициализация проекта"
+	@echo "  1. make venv                 # Создать виртуальное окружение"
 	@echo "  2. source .venv/bin/activate # Активировать venv"
-	@echo "  3. make bot            # Запуск бота"
+	@echo "  3. make install              # Установить зависимости"
+	@echo "  4. make setup-env            # Настроить .env файл"
+	@echo "  5. make bot                  # Запустить бота"
 	@echo ""
 	@printf "$(CYAN)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n"
 	@echo "$(GREEN)📦 Управление проектом:$(NC)"
@@ -46,23 +49,6 @@ uv-install: ## Установить uv (если не установлен)
 	@printf "$(CYAN)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n"
 
 # ===== ОСНОВНЫЕ КОМАНДЫ =====
-init: check-python-version venv install setup-env ## Инициализировать проект (первый запуск)
-	@printf "$(CYAN)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n"
-	@echo "$(GREEN)✅ ПРОЕКТ ИНИЦИАЛИЗИРОВАН!$(NC)"
-	@printf "$(CYAN)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n"
-	@echo "$(YELLOW)📝 Не забудьте добавить BOT_TOKEN в файл .env$(NC)"
-	@echo ""
-	@echo "$(YELLOW)🚀 Дальнейшие шаги:$(NC)"
-	@echo "  1. Активируйте виртуальное окружение:"
-	@echo ""
-	@echo "     source .venv/bin/activate "
-	@echo ""
-	@echo "  2. Запустите бота:"
-	@echo ""
-	@echo "     make bot"
-	@echo ""
-	@printf "$(CYAN)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n"
-
 venv: check-python-version ## Создать виртуальное окружение через uv
 	@printf "$(CYAN)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n"
 	@echo "$(YELLOW)🔧 СОЗДАНИЕ ВИРТУАЛЬНОГО ОКРУЖЕНИЯ$(NC)"
@@ -100,17 +86,30 @@ check-python-version: ## Проверить версию Python
 	fi
 	@printf "$(CYAN)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n"
 
-install: ## Установить зависимости через uv
+install: check-python-version ## Установить зависимости
 	@printf "$(CYAN)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n"
 	@echo "$(YELLOW)📥 УСТАНОВКА ЗАВИСИМОСТЕЙ$(NC)"
 	@printf "$(CYAN)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n"
+	
+	@if [ -z "$$VIRTUAL_ENV" ]; then \
+		echo "$(RED)❌ ОШИБКА: Виртуальное окружение не активировано!$(NC)"; \
+		echo ""; \
+		echo "$(YELLOW)Активируйте окружение:$(NC)"; \
+		echo "  $(GREEN)source .venv/bin/activate$(NC)"; \
+		echo ""; \
+		exit 1; \
+	fi
+	
+	@# Явно указываем uv использовать Python из venv
 	@if command -v $(UV) > /dev/null; then \
-		$(UV) pip install -e . -q; \
+		echo "$(YELLOW)Установка через uv...$(NC)"; \
+		UV_PYTHON="$(VENV_DIR)/bin/python" $(UV) pip install -e . -q; \
 	else \
 		echo "$(YELLOW)uv не найден, использую pip...$(NC)"; \
-		pip install -e . -q; \
+		$(VENV_DIR)/bin/python -m pip install -e .; \
 	fi
-	@echo "$(GREEN)✅ Зависимости установлены$(NC)"
+	
+	@echo "$(GREEN)✅ Зависимости установлены в $(VENV_DIR)$(NC)"
 	@printf "$(CYAN)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n"
 
 install-dev: ## Установить зависимости для разработки через uv
