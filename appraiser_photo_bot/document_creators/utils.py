@@ -2,10 +2,11 @@
 
 import io
 import logging
-from typing import Tuple, List, Optional, Dict, Union
+from typing import Dict, List, Optional, Tuple, Union
+
 from PIL import Image
 
-from .constants import SIZE_OPTIONS, MAX_IMAGE_SIZE, DEFAULT_IMAGE_QUALITY
+from .constants import DEFAULT_IMAGE_QUALITY, MAX_IMAGE_SIZE, SIZE_OPTIONS
 
 logger = logging.getLogger(__name__)
 
@@ -34,12 +35,8 @@ def compress_image(
                     new_height = max_size
                     new_width = int(width * (max_size / height))
 
-                image = image.resize(
-                    (new_width, new_height), Image.Resampling.LANCZOS
-                )
-                logger.info(
-                    f"Масштабирование: {width}x{height} → {new_width}x{new_height}"
-                )
+                image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+                logger.info(f"Масштабирование: {width}x{height} → {new_width}x{new_height}")
 
             if image.mode in ("RGBA", "LA", "P"):
                 background: Image.Image = Image.new("RGB", image.size, (255, 255, 255))
@@ -67,7 +64,7 @@ def compress_image(
 
             logger.info(
                 f"Сжатие: {original_format} → {target_format}, "
-                f"{original_size} → {compressed_size} ({compression_ratio*100:.1f}%)"
+                f"{original_size} → {compressed_size} ({compression_ratio * 100:.1f}%)"
             )
 
             if compression_ratio > 0.95:
@@ -81,9 +78,7 @@ def compress_image(
         return image_bytes
 
 
-def compress_photos_for_document(
-    photos: List[bytes], max_size_pixels: int = 2000 * 2000
-) -> List[bytes]:
+def compress_photos_for_document(photos: List[bytes], max_size_pixels: int = 2000 * 2000) -> List[bytes]:
     """Сжимает список фотографий для вставки в документ."""
     compressed_photos: List[bytes] = []
     for i, photo in enumerate(photos):
@@ -95,9 +90,9 @@ def compress_photos_for_document(
                 target_format="JPEG",
             )
             compressed_photos.append(compressed)
-            logger.debug(f"Сжато фото {i+1}: {len(photo)} → {len(compressed)} байт")
+            logger.debug(f"Сжато фото {i + 1}: {len(photo)} → {len(compressed)} байт")
         except Exception as e:
-            logger.warning(f"Ошибка сжатия фото {i+1}: {e}")
+            logger.warning(f"Ошибка сжатия фото {i + 1}: {e}")
             compressed_photos.append(photo)
     return compressed_photos
 
@@ -132,9 +127,7 @@ def split_into_pages(photos: List[bytes], rows: int, cols: int) -> List[List[byt
     return pages
 
 
-def calculate_pages_info(
-    photos_count: int, rows: int, cols: int
-) -> Dict[str, Union[int, str, float]]:
+def calculate_pages_info(photos_count: int, rows: int, cols: int) -> Dict[str, Union[int, str, float]]:
     """Вычисляет информацию о страницах документа."""
     photos_per_page: int = rows * cols
     total_pages: int = (photos_count + photos_per_page - 1) // photos_per_page

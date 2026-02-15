@@ -1,13 +1,13 @@
 """Менеджер временных файлов с автоматической очисткой."""
 
+import atexit
+import logging
 import os
 import shutil
 import tempfile
 import threading
-import atexit
-import logging
 from datetime import datetime, timedelta
-from typing import Set, List, Optional
+from typing import List, Optional, Set
 
 logger = logging.getLogger(__name__)
 
@@ -63,9 +63,7 @@ class TempFileManager:
         for filepath in self._temp_files.copy():
             try:
                 if os.path.exists(filepath):
-                    file_mtime: datetime = datetime.fromtimestamp(
-                        os.path.getmtime(filepath)
-                    )
+                    file_mtime: datetime = datetime.fromtimestamp(os.path.getmtime(filepath))
                     if file_mtime < cutoff_time:
                         files_to_remove.append(filepath)
                 else:
@@ -92,9 +90,7 @@ class TempFileManager:
             self._temp_dirs.discard(dirpath)
 
         if files_to_remove or dirs_to_remove:
-            logger.info(
-                f"Очищено {len(files_to_remove)} файлов и {len(dirs_to_remove)} директорий"
-            )
+            logger.info(f"Очищено {len(files_to_remove)} файлов и {len(dirs_to_remove)} директорий")
 
     def _delete_file_safe(self, filepath: str) -> None:
         try:
@@ -155,4 +151,3 @@ def cleanup_old_temp_files(max_age_hours: int = 24) -> None:
 def cleanup_all_temp_files() -> None:
     manager: TempFileManager = TempFileManager()
     manager.cleanup_all()
-    

@@ -1,8 +1,9 @@
 """Функции для генерации сообщений пользователю."""
 
-from typing import Dict, Optional
 from datetime import datetime
-from .utils import get_size_option_name, calculate_pages_info
+from typing import Dict, Optional
+
+from .utils import calculate_pages_info, get_size_option_name
 
 
 class MessageGenerator:
@@ -82,22 +83,14 @@ class MessageGenerator:
         return f"⚠️ Для лучшего качества рекомендуется не более {max_cols} столбцов."
 
     @staticmethod
-    def get_too_many_photos_per_page_message(
-        photos_per_page: int, max_photos: int
-    ) -> str:
+    def get_too_many_photos_per_page_message(photos_per_page: int, max_photos: int) -> str:
         """Сообщение о слишком большом количестве фото на странице."""
-        return (
-            f"❌ Слишком много фото на странице ({photos_per_page}). "
-            f"Максимально разрешено: {max_photos}"
-        )
+        return f"❌ Слишком много фото на странице ({photos_per_page}). Максимально разрешено: {max_photos}"
 
     @staticmethod
     def get_no_photos_error() -> str:
         """Сообщение об ошибке: нет фото."""
-        return (
-            "❌ Вы не загрузили ни одной фотографии.\n"
-            "Отправьте фото или нажмите '🟢 Начать' для начала."
-        )
+        return "❌ Вы не загрузили ни одной фотографии.\nОтправьте фото или нажмите '🟢 Начать' для начала."
 
     @staticmethod
     def get_photo_format_error() -> str:
@@ -177,9 +170,7 @@ class MessageGenerator:
     ) -> str:
         """Создает сообщение подтверждения перед созданием документа."""
         size_text = get_size_option_name(size_option)
-        stats = MessageGenerator.generate_document_stats(
-            photos_count, rows, cols, page_info
-        )
+        stats = MessageGenerator.generate_document_stats(photos_count, rows, cols, page_info)
 
         return (
             f"✅ *Загрузка завершена!*\n\n"
@@ -192,9 +183,7 @@ class MessageGenerator:
         )
 
     @staticmethod
-    def generate_document_stats(
-        photos_count: int, rows: int, cols: int, page_info: Dict[str, int]
-    ) -> str:
+    def generate_document_stats(photos_count: int, rows: int, cols: int, page_info: Dict[str, int]) -> str:
         """Генерирует статистику документа для сообщения пользователю."""
         stats = []
 
@@ -211,9 +200,7 @@ class MessageGenerator:
         else:
             stats.append(f"📄 Страниц: {page_info['total_pages']}")
             if page_info["photos_on_last_page"] != page_info["photos_per_page"]:
-                stats.append(
-                    f"📌 На последней странице: {page_info['photos_on_last_page']} фото"
-                )
+                stats.append(f"📌 На последней странице: {page_info['photos_on_last_page']} фото")
 
         return "\n".join(stats)
 
@@ -250,11 +237,7 @@ class MessageGenerator:
     @staticmethod
     def get_back_to_title_message() -> str:
         """Сообщение о возврате к началу."""
-        return (
-            "Начинаем заново.\n\n"
-            "📝 Введите заголовок для таблицы "
-            "(или нажмите 'Без заголовка' если без заголовка):"
-        )
+        return "Начинаем заново.\n\n📝 Введите заголовок для таблицы (или нажмите 'Без заголовка' если без заголовка):"
 
     @staticmethod
     def get_back_confirmation_message() -> str:
@@ -281,10 +264,7 @@ class MessageGenerator:
     @staticmethod
     def get_operation_cancelled_message() -> str:
         """Сообщение об отмене операции."""
-        return (
-            "Операция отменена. Данные удалены.\n"
-            "Для начала новой работы нажмите '🟢 Начать'"
-        )
+        return "Операция отменена. Данные удалены.\nДля начала новой работы нажмите '🟢 Начать'"
 
     @staticmethod
     def get_confirm_cancelled_message() -> str:
@@ -324,9 +304,7 @@ class MessageGenerator:
         )
 
     @staticmethod
-    def get_sending_document_message_with_progress(
-        doc_size_mb: float, progress: int = 50
-    ) -> str:
+    def get_sending_document_message_with_progress(doc_size_mb: float, progress: int = 50) -> str:
         """Сообщение о отправке документа с прогрессом."""
         return (
             f"📤 *Отправляю документ...* ({progress}%)\n\n"
@@ -381,16 +359,12 @@ class MessageGenerator:
         return caption
 
     @staticmethod
-    def generate_filename(
-        title: Optional[str], photos_count: int, rows: int, cols: int
-    ) -> str:
+    def generate_filename(title: Optional[str], photos_count: int, rows: int, cols: int) -> str:
         """Генерирует имя файла для документа."""
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
         if title:
-            clean_title = "".join(
-                c for c in title if c.isalnum() or c in (" ", "-", "_")
-            ).strip()
+            clean_title = "".join(c for c in title if c.isalnum() or c in (" ", "-", "_")).strip()
             clean_title = clean_title.replace(" ", "_")
             return f"{clean_title}_{photos_count}photos_{rows}x{cols}_{timestamp}.docx"
         else:
@@ -399,9 +373,7 @@ class MessageGenerator:
     # ===== Статус сообщения =====
 
     @staticmethod
-    def get_bot_status_message(
-        total_users: int, total_photos: int, current_time: str
-    ) -> str:
+    def get_bot_status_message(total_users: int, total_photos: int, current_time: str) -> str:
         """Общий статус бота."""
         return (
             f"📊 *Общий статус бота:*\n\n"
@@ -435,9 +407,7 @@ class MessageGenerator:
         )
 
     @staticmethod
-    def get_session_status_size_selection_message(
-        rows: int, cols: int, title: Optional[str]
-    ) -> str:
+    def get_session_status_size_selection_message(rows: int, cols: int, title: Optional[str]) -> str:
         """Статус сессии при выборе размера."""
         return (
             f"📊 *Статус вашей сессии:*\n\n"
@@ -469,11 +439,7 @@ class MessageGenerator:
     @staticmethod
     def get_session_status_ready_message() -> str:
         """Статус сессии при готовности к работе."""
-        return (
-            "📊 *Статус вашей сессии:*\n\n"
-            "• Состояние: *Готов к работе*\n\n"
-            "Для начала нажмите '🟢 Начать'."
-        )
+        return "📊 *Статус вашей сессии:*\n\n• Состояние: *Готов к работе*\n\nДля начала нажмите '🟢 Начать'."
 
     # ===== Помощь =====
 
@@ -516,9 +482,7 @@ class MessageGenerator:
     # ===== Сообщения об ошибках =====
 
     @staticmethod
-    def get_too_many_photos_error(
-        photos_count: int, max_photos: int = 15
-    ) -> str:
+    def get_too_many_photos_error(photos_count: int, max_photos: int = 15) -> str:
         """Сообщение об ошибке: слишком много фото."""
         return (
             f"⚠️ *Слишком много фото ({photos_count})*\n\n"
@@ -572,11 +536,7 @@ class MessageGenerator:
     @staticmethod
     def get_generic_api_error(error_msg: str) -> str:
         """Сообщение об общей ошибке Telegram API."""
-        return (
-            f"❌ *Ошибка Telegram API:*\n\n"
-            f"`{error_msg[:200]}...`\n\n"
-            f"🔄 Попробуйте снова, нажмите: '🟢 Начать'"
-        )
+        return f"❌ *Ошибка Telegram API:*\n\n`{error_msg[:200]}...`\n\n🔄 Попробуйте снова, нажмите: '🟢 Начать'"
 
     @staticmethod
     def get_creation_timeout_error() -> str:
@@ -631,7 +591,7 @@ class MessageGenerator:
             "upload_photos": "Отправляйте фото или нажмите '✅ Готово'.",
             "confirmation": "Нажмите '✅ Да, всё верно' или '❌ Нет, начать заново'.",
         }
-        
+
         hint = state_hints.get(state, "Пожалуйста, используйте кнопки из меню.")
         return f"Неизвестная команда. {hint}"
 
@@ -643,14 +603,14 @@ class MessageGenerator:
     @staticmethod
     def get_error_message_text(error_msg: str = "", enable_buttons: bool = True) -> str:
         """Получить текстовое сообщение об ошибке.
-        
+
         Args:
             error_msg: Текст ошибки от Telegram API
             enable_buttons: Флаг, включены ли кнопки
         """
         # Определяем тип ошибки по содержанию
         error_lower = error_msg.lower()
-        
+
         if "conflict" in error_lower or "terminated by other getupdates" in error_lower:
             return (
                 "🔄 *Конфликт подключения*\n\n"
@@ -661,7 +621,7 @@ class MessageGenerator:
                 "2. Подождите 10 секунд\n"
                 "3. Нажмите '🟢 Начать' для продолжения"
             )
-        
+
         elif "timeout" in error_lower or "timed out" in error_lower:
             return (
                 "⏳ *Таймаут операции*\n\n"
@@ -671,7 +631,7 @@ class MessageGenerator:
                 "2. Попробуйте снова через минуту\n"
                 "3. Нажмите '🟢 Начать' для продолжения"
             )
-        
+
         elif "file is too big" in error_lower:
             return (
                 "📦 *Файл слишком большой*\n\n"
@@ -681,7 +641,6 @@ class MessageGenerator:
                 "2. Выбирайте меньший размер фото\n"
                 "3. Нажмите '🟢 Начать' для начала заново"
             )
-        
         elif "network" in error_lower or "connection" in error_lower:
             return (
                 "🌐 *Проблемы с сетью*\n\n"
@@ -691,11 +650,11 @@ class MessageGenerator:
                 "2. Подождите несколько минут\n"
                 "3. Нажмите '🟢 Начать' для продолжения"
             )
-        
+
         else:
             # Общая ошибка
             error_preview = error_msg[:100] + "..." if len(error_msg) > 100 else error_msg
-            
+
             if enable_buttons:
                 return (
                     f"⚠️ *Произошла ошибка*\n\n"
@@ -706,10 +665,7 @@ class MessageGenerator:
                     f"3. Если ошибка повторяется, обратитесь к разработчику"
                 )
             else:
-                return (
-                    f"⚠️ Произошла ошибка: {error_preview}\n\n"
-                    f"Попробуйте снова через минуту."
-                )
+                return f"⚠️ Произошла ошибка: {error_preview}\n\nПопробуйте снова через минуту."
 
     @staticmethod
     def get_basic_unknown_message() -> str:

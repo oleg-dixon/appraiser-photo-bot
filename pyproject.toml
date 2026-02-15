@@ -1,0 +1,85 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "appraiser-photo-bot"
+dynamic = ["version"]
+authors = [
+    {name = "Oleg Diukaev", email = "olegdixon5973@gmail.com"},
+]
+description = "Telegram bot for creating Word documents with photo tables"
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "MIT"}
+keywords = ["telegram", "bot", "word", "document", "table", "photo", "image", "automation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Communications :: Chat",
+    "Topic :: Office/Business",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Framework :: AsyncIO",
+]
+
+dependencies = [
+    "python-telegram-bot[job-queue]>=20.0",
+    "pillow>=10.0.0",
+    "python-docx>=1.1.0",
+    "python-dotenv>=1.0.0",
+    "typing-extensions>=4.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "uv>=0.4.0",
+    "ruff>=0.14.14",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/oleg-dixon/appraiser-photo-bot"
+"Bug Reports" = "https://github.com/oleg-dixon/appraiser-photo-bot/issues"
+"Source" = "https://github.com/oleg-dixon/appraiser-photo-bot"
+"Documentation" = "https://github.com/oleg-dixon/appraiser-photo-bot#readme"
+
+[project.scripts]
+appraiser-photo-bot = "cli:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "appraiser_photo_bot.__init__.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["appraiser_photo_bot*"]
+
+[tool.setuptools.package-data]
+"appraiser_photo_bot" = ["py.typed"]
+
+[tool.setuptools]
+include-package-data = true
+
+# Настройки ruff (используется в make lint/format)
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+]
+ignore = []
+
+[tool.ruff.lint.mccabe]
+max-complexity = 15
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"

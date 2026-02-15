@@ -39,4 +39,3 @@ class BotConfig:
             enable_buttons=os.getenv("ENABLE_BUTTONS", "true").lower() == "true",
             button_timeout=int(os.getenv("BUTTON_TIMEOUT", "3600")),
         )
-    

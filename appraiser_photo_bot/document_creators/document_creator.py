@@ -6,9 +6,9 @@ from typing import List, Optional
 
 from docx import Document
 
+from .document_base import create_multi_page_document, create_single_page_document
 from .temp_manager import TempFileManager
 from .utils import compress_photos_for_document
-from .document_base import create_single_page_document, create_multi_page_document
 
 logger = logging.getLogger(__name__)
 
@@ -112,4 +112,3 @@ class DocumentCreator:
         """Старый метод для обратной совместимости."""
         logger.warning("Используется устаревший метод create_table")
         return self.create_document(photos)
-    

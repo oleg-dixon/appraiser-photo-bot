@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
+import logging
 import os
 import sys
-import logging
 from typing import Optional
 
 from dotenv import load_dotenv
-from bot import PhotoTableBot
-from config import BotConfig
+
+from appraiser_photo_bot.bot import PhotoTableBot
+from appraiser_photo_bot.config import BotConfig
 
 
 def setup_logging() -> None:

@@ -1,14 +1,15 @@
 """Основной модуль бота."""
 
 import logging
-from typing import Optional, Any
+from typing import Any, Optional
 
-from telegram.ext import ApplicationBuilder, MessageHandler, filters
 from telegram import Update
-from handlers import BotHandlers
-from config import BotConfig
-from document_creators.messages import MessageGenerator
-from keyboards import Keyboards
+from telegram.ext import ApplicationBuilder, MessageHandler, filters
+
+from .config import BotConfig
+from .document_creators.messages import MessageGenerator
+from .handlers import BotHandlers
+from .keyboards import Keyboards
 
 logger = logging.getLogger(__name__)
 
@@ -102,9 +103,7 @@ class PhotoTableBot:
             if user_id in self.handlers.user_data:
                 state = self.handlers.user_data[user_id].get("state", "start")
 
-            message_text = self.message_generator.get_unknown_message_text(
-                state, self.config.enable_buttons
-            )
+            message_text = self.message_generator.get_unknown_message_text(state, self.config.enable_buttons)
 
             if self.config.enable_buttons:
                 reply_markup = Keyboards.create_start_keyboard()
@@ -141,9 +140,7 @@ class PhotoTableBot:
 
         try:
             error_msg: str = str(context.error)[:200]
-            message_text = self.message_generator.get_error_message_text(
-                error_msg, self.config.enable_buttons
-            )
+            message_text = self.message_generator.get_error_message_text(error_msg, self.config.enable_buttons)
 
             reply_markup = None
             if self.config.enable_buttons and update.effective_user:

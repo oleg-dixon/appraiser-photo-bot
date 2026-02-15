@@ -2,16 +2,16 @@
 
 import io
 import logging
-from typing import List, Dict, Any, Tuple, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from docx import Document
-from docx.shared import Cm, Pt, RGBColor
+from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT, WD_TABLE_ALIGNMENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.enum.table import WD_TABLE_ALIGNMENT, WD_CELL_VERTICAL_ALIGNMENT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
+from docx.shared import Cm, Pt, RGBColor
 
-from .constants import SIZE_OPTIONS, A4_WIDTH_CM, A4_HEIGHT_CM, DEFAULT_MARGINS
+from .constants import A4_HEIGHT_CM, A4_WIDTH_CM, DEFAULT_MARGINS, SIZE_OPTIONS
 from .utils import calculate_auto_size, split_into_pages
 
 logger = logging.getLogger(__name__)
@@ -117,9 +117,7 @@ def get_image_width_for_table(
         margins = DEFAULT_MARGINS
 
     if image_size_option != "auto":
-        size_cm_tuple: Tuple[float, float] = SIZE_OPTIONS.get(
-            image_size_option, (5.0, 5.0)
-        )
+        size_cm_tuple: Tuple[float, float] = SIZE_OPTIONS.get(image_size_option, (5.0, 5.0))
         return Cm(size_cm_tuple[0])
 
     usable_page_width: float = page_width_cm - (margins["left"] + margins["right"])
@@ -249,9 +247,7 @@ def create_multi_page_document(
     pages: List[List[bytes]] = split_into_pages(photos, rows, cols)
 
     if len(pages) == 1:
-        return create_single_page_document(
-            photos, rows, cols, table_title, image_size_option
-        )
+        return create_single_page_document(photos, rows, cols, table_title, image_size_option)
 
     first_page: Document = create_single_page_document(
         pages[0],

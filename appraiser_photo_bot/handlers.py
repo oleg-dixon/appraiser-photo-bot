@@ -1,30 +1,26 @@
 """Обработчики сообщений и команд бота."""
 
-import logging
 import asyncio
-import telegram.error
+import logging
 from datetime import datetime
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
+
+import telegram.error
 from telegram import Update
 from telegram.constants import ChatAction
 from telegram.ext import (
     CallbackQueryHandler,
-    MessageHandler,
     CommandHandler,
-    ConversationHandler,
-    filters,
     ContextTypes,
+    ConversationHandler,
+    MessageHandler,
+    filters,
 )
 
-from document_creators import (
-    get_size_option_name,
-    compress_image,
-    calculate_pages_info,
-    DocumentCreator
-)
-from config import BotConfig
-from keyboards import Keyboards
-from document_creators.messages import MessageGenerator
+from .config import BotConfig
+from .document_creators import DocumentCreator, calculate_pages_info, compress_image, get_size_option_name
+from .document_creators.messages import MessageGenerator
+from .keyboards import Keyboards
 
 logger = logging.getLogger(__name__)
 
@@ -194,9 +190,7 @@ class BotHandlers:
 
             if photos_per_page > self.config.max_photos:
                 await update.message.reply_text(
-                    self.messages.get_too_many_photos_per_page_message(
-                        photos_per_page, self.config.max_photos
-                    ),
+                    self.messages.get_too_many_photos_per_page_message(photos_per_page, self.config.max_photos),
                     parse_mode="Markdown",
                     reply_markup=Keyboards.create_input_keyboard(),
                 )
@@ -293,9 +287,7 @@ class BotHandlers:
             logger.info(f"Фото загружено, размер в байтах: {len(photo_bytes)}")
 
             logger.info("Сжимаем фото...")
-            compressed_bytes: bytes = compress_image(
-                photo_bytes, self.config.image_quality, self.config.image_max_size
-            )
+            compressed_bytes: bytes = compress_image(photo_bytes, self.config.image_quality, self.config.image_max_size)
             logger.info(f"Фото сжато, размер после сжатия: {len(compressed_bytes)}")
 
             self.user_data[user_id]["photos"].append(compressed_bytes)
@@ -305,9 +297,7 @@ class BotHandlers:
             cols: int = self.user_data[user_id]["cols"]
             received: int = len(self.user_data[user_id]["photos"])
 
-            response_text: str = self.messages.generate_upload_progress(
-                current=received, rows=rows, cols=cols
-            )
+            response_text: str = self.messages.generate_upload_progress(current=received, rows=rows, cols=cols)
 
             logger.info("Отправляем ответ пользователю")
             await update.message.reply_text(
@@ -499,9 +489,7 @@ class BotHandlers:
         self.cleanup_user_data(user_id)
         return ConversationHandler.END
 
-    async def create_document_from_text(
-        self, update: Update, context: ContextTypes.DEFAULT_TYPE, user_id: int
-    ) -> None:
+    async def create_document_from_text(self, update: Update, context: ContextTypes.DEFAULT_TYPE, user_id: int) -> None:
         """Создает документ из текстового подтверждения."""
         await self._create_and_send_document(context, user_id)
 
@@ -530,19 +518,14 @@ class BotHandlers:
             page_info: Dict = calculate_pages_info(photos_count, rows, cols)
 
             logger.info(
-                f"Параметры документа: {photos_count} фото, таблица {rows}×{cols}, "
-                f"{page_info['total_pages']} страниц"
+                f"Параметры документа: {photos_count} фото, таблица {rows}×{cols}, {page_info['total_pages']} страниц"
             )
 
             if photos_count > BotConfig.max_photos:
                 logger.warning(f"Слишком много фото: {photos_count} > {BotConfig.max_photos}")
-                error_text: str = self.messages.get_too_many_photos_error(
-                    photos_count, BotConfig.max_photos
-                )
+                error_text: str = self.messages.get_too_many_photos_error(photos_count, BotConfig.max_photos)
 
-                await context.bot.send_message(
-                    chat_id=user_id, text=error_text, parse_mode="Markdown"
-                )
+                await context.bot.send_message(chat_id=user_id, text=error_text, parse_mode="Markdown")
                 await context.bot.send_message(
                     chat_id=user_id,
                     text=self.messages.get_start_prompt(),
@@ -560,9 +543,7 @@ class BotHandlers:
                 reply_markup=Keyboards.create_wait_keyboard(),
             )
 
-            await context.bot.send_chat_action(
-                chat_id=user_id, action=ChatAction.UPLOAD_DOCUMENT
-            )
+            await context.bot.send_chat_action(chat_id=user_id, action=ChatAction.UPLOAD_DOCUMENT)
 
             logger.info("Создаю DocumentCreator...")
             creator: DocumentCreator = DocumentCreator(
@@ -573,9 +554,7 @@ class BotHandlers:
             )
 
             logger.info(f"Начинаю создание документа из {photos_count} фото...")
-            document_bytes: bytes = creator.create_document(
-                self.user_data[user_id]["photos"]
-            )
+            document_bytes: bytes = creator.create_document(self.user_data[user_id]["photos"])
 
             doc_size_mb: float = len(document_bytes) / 1024 / 1024
             logger.info(f"Документ создан: {doc_size_mb:.2f} MB")
@@ -594,9 +573,7 @@ class BotHandlers:
                 self.cleanup_user_data(user_id)
                 return
 
-            sending_text: str = self.messages.get_sending_document_message_with_progress(
-                doc_size_mb, progress=50
-            )
+            sending_text: str = self.messages.get_sending_document_message_with_progress(doc_size_mb, progress=50)
 
             await context.bot.send_message(
                 chat_id=user_id,
@@ -738,14 +715,10 @@ class BotHandlers:
 
         if user_id not in self.user_data:
             total_users: int = len(self.user_data)
-            total_photos: int = sum(
-                len(data.get("photos", [])) for data in self.user_data.values()
-            )
+            total_photos: int = sum(len(data.get("photos", [])) for data in self.user_data.values())
 
             await update.message.reply_text(
-                self.messages.get_bot_status_message(
-                    total_users, total_photos, datetime.now().strftime("%H:%M:%S")
-                ),
+                self.messages.get_bot_status_message(total_users, total_photos, datetime.now().strftime("%H:%M:%S")),
                 parse_mode="Markdown",
                 reply_markup=Keyboards.create_start_keyboard(),
             )
@@ -774,9 +747,7 @@ class BotHandlers:
                 reply_keyboard = Keyboards.create_input_keyboard()
 
             elif state in ["rows_input", "cols_input"]:
-                status_text += self.messages.get_session_status_table_setup_message(
-                    user_data["title"]
-                )
+                status_text += self.messages.get_session_status_table_setup_message(user_data["title"])
                 reply_keyboard = Keyboards.create_input_keyboard()
 
             elif state == "title":
@@ -787,9 +758,7 @@ class BotHandlers:
                 status_text += self.messages.get_session_status_ready_message()
                 reply_keyboard = Keyboards.create_start_keyboard()
 
-            await update.message.reply_text(
-                status_text, parse_mode="Markdown", reply_markup=reply_keyboard
-            )
+            await update.message.reply_text(status_text, parse_mode="Markdown", reply_markup=reply_keyboard)
 
     async def help_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         """Справка по боту."""
@@ -812,9 +781,7 @@ class BotHandlers:
         else:
             reply_keyboard = Keyboards.create_start_keyboard()
 
-        await update.message.reply_text(
-            help_text, parse_mode="Markdown", reply_markup=reply_keyboard
-        )
+        await update.message.reply_text(help_text, parse_mode="Markdown", reply_markup=reply_keyboard)
 
     def cleanup_user_data(self, user_id: int) -> None:
         """Очищает данные пользователя из памяти."""
@@ -881,19 +848,14 @@ class BotHandlers:
                 PHOTOS: [
                     MessageHandler(filters.PHOTO | filters.Document.IMAGE, self.get_photo),
                     MessageHandler(
-                        filters.TEXT
-                        & filters.Regex(
-                            r"^(✅ Готово|◀️ Назад|🧹 Очистить|📊 Статус|❓ Помощь)$"
-                        ),
+                        filters.TEXT & filters.Regex(r"^(✅ Готово|◀️ Назад|🧹 Очистить|📊 Статус|❓ Помощь)$"),
                         self.handle_conversation_buttons,
                     ),
                 ],
                 CONFIRM: [
                     MessageHandler(
                         filters.TEXT
-                        & filters.Regex(
-                            r"^(✅ Да, всё верно|❌ Нет, начать заново|◀️ Назад|📊 Статус|❓ Помощь)$"
-                        ),
+                        & filters.Regex(r"^(✅ Да, всё верно|❌ Нет, начать заново|◀️ Назад|📊 Статус|❓ Помощь)$"),
                         self.handle_conversation_buttons,
                     ),
                 ],
@@ -908,9 +870,7 @@ class BotHandlers:
             allow_reentry=True,
         )
 
-    async def handle_conversation_buttons(
-        self, update: Update, context: ContextTypes.DEFAULT_TYPE
-    ) -> Optional[int]:
+    async def handle_conversation_buttons(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> Optional[int]:
         """Обработчик кнопок внутри ConversationHandler."""
         text: str = update.message.text
         user_id: int = update.effective_user.id
@@ -951,4 +911,3 @@ class BotHandlers:
             CommandHandler("status", self.status_command),
             CommandHandler("help", self.help_command),
         ]
-    

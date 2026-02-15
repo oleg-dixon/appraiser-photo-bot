@@ -1,13 +1,10 @@
 """
 Модуль для создания клавиатур бота.
 """
+
 from typing import List
 
-from telegram import (
-    ReplyKeyboardMarkup,
-    InlineKeyboardMarkup,
-    InlineKeyboardButton
-)
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
 
 
 class Keyboards:
@@ -23,9 +20,7 @@ class Keyboards:
             ["🟢 Начать"],
             ["📊 Статус", "❓ Помощь"],
         ]
-        return ReplyKeyboardMarkup(
-            keyboard, resize_keyboard=True, one_time_keyboard=True
-        )
+        return ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
 
     @staticmethod
     def create_title_keyboard() -> ReplyKeyboardMarkup:
@@ -38,9 +33,7 @@ class Keyboards:
             ["🟢 Начать"],
             ["📊 Статус", "❓ Помощь"],
         ]
-        return ReplyKeyboardMarkup(
-            keyboard, resize_keyboard=True, one_time_keyboard=True
-        )
+        return ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
 
     @staticmethod
     def create_input_keyboard() -> ReplyKeyboardMarkup:
@@ -101,4 +94,3 @@ class Keyboards:
             ["❓ Помощь"],
         ]
         return ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-    
